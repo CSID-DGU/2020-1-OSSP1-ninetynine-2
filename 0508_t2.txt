@@ -1,0 +1,4 @@
+python demo_texture.py -i input/PIC5.jpg -r input2/change.png -o output/result.jpg --mode 1 --gpu 0
+
+//train 된 모델 필요
+//https://github.com/YadiraF/PRNet

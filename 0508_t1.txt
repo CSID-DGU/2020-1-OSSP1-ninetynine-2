@@ -1,0 +1,85 @@
+python align_images.py ./Pictures ./aligned_pictures
+//얼굴 영역 지정 -> 고화질
+
+python dataset_tool.py create_from_images Datasets aligned_pictures
+//데이터화
+
+python run_projector.py project-real-images --network=gdrive:networks/stylegan2-ffhq-config-f.pkl --dataset=Datasets --data-dir=/stylegan2-master --num-images=1
+//이미지 생성
+
+
+//mixing code
+import numpy as np
+import PIL.Image
+import dnnlib
+import dnnlib.tflib as tflib
+import re
+import sys
+
+import pretrained_networks
+
+def style_mixing(dlatent, col_seeds, truncation_psi, col_styles, minibatch_size=4):
+    print('Loading networks from ...')
+    _G, _D, Gs = pretrained_networks.load_networks('gdrive:networks/stylegan2-ffhq-config-f.pkl')
+    w_avg = Gs.get_var('dlatent_avg') # [component]
+    row_seeds = [80]
+    Gs_syn_kwargs = dnnlib.EasyDict()
+    Gs_syn_kwargs.output_transform = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
+    Gs_syn_kwargs.randomize_noise = False
+    Gs_syn_kwargs.minibatch_size = 1 #minibatch_size
+
+    print('Generating W vectors...')
+    all_seeds = list(set(col_seeds))
+    all_z = np.stack([np.random.RandomState(seed).randn(*Gs.input_shape[1:]) for seed in all_seeds]) # [minibatch, component]
+
+    all_w = Gs.components.mapping.run(all_z, None) # [minibatch, layer, component]
+    all_w = np.concatenate((all_w, dlatent), 0)
+    all_w = w_avg + (all_w - w_avg) * truncation_psi # [minibatch, layer, component]
+    all_seeds.extend(row_seeds) #= list(set(col_seeds + row_seeds))
+    w_dict = {seed: w for seed, w in zip(all_seeds, list(all_w))} # [layer, component]
+    
+    print('Generating images...')
+    all_images = Gs.components.synthesis.run(all_w, **Gs_syn_kwargs) # [minibatch, height, width, channel]
+    image_dict = {(seed, seed): image for seed, image in zip(all_seeds, list(all_images))}
+
+    print('Generating style-mixed images...')
+    for row_seed in row_seeds:
+        for col_seed in col_seeds:
+            w = w_dict[row_seed].copy()
+            # We set col_styles in this part
+            w[3:8] = w_dict[col_seed][3:8]
+            image = Gs.components.synthesis.run(w[np.newaxis], **Gs_syn_kwargs)[0]
+            image_dict[(row_seed, col_seed)] = image
+
+    print('Saving images...')
+    for (row_seed, col_seed), image in image_dict.items():
+        PIL.Image.fromarray(image, 'RGB').save(dnnlib.make_run_dir_path('Mix/'+'%d-%d.png' % (row_seed, col_seed)))
+
+    print('Saving image grid...')
+    _N, _C, H, W = Gs.output_shape
+    canvas = PIL.Image.new('RGB', (W * (len(col_seeds) + 1), H * (len(row_seeds) + 1)), 'black')
+    for row_idx, row_seed in enumerate([None] + row_seeds):
+        for col_idx, col_seed in enumerate([None] + col_seeds):
+            if row_seed is None and col_seed is None:
+                continue
+            key = (row_seed, col_seed)
+            if row_seed is None:
+                key = (col_seed, col_seed)
+            if col_seed is None:
+                key = (row_seed, row_seed)
+            canvas.paste(PIL.Image.fromarray(image_dict[key], 'RGB'), (W * col_idx, H * row_idx))
+    canvas.save(dnnlib.make_run_dir_path('Mix/grid.png'))
+
+
+//생성된 가짜이미지와 합성(밑은 합성할 seed)
+dlat = np.load('/content/stylegan2/results/00003-project-real-images/image0000--dlatent.npy')
+style_mixing(dlat, [44,55,1000,10,3,100,75,458,1500], 0.5, 5)
+
+//압축
+import shutil
+
+zip_name = '/content/stylegan2/results'
+directory_name = '/content/stylegan2/results'
+
+# Create 'path\to\zip_file.zip'
+shutil.make_archive(zip_name, 'zip', directory_name)
