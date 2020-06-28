@@ -50,19 +50,18 @@
 
 
 
+
+
+
+## 실행 방법
 Colab에서 실행시
 <pre><code>!pip install tensorflow-gpu==1.15 
 !pip install face_recognition 
 dlib>=19.9.0 
 numpy>=1.13.1 
 scipy>=0.18.0 </code></pre>
-실행후 바로 사용가능
-
-
-
-
-## 실행 방법
-~~
+실행후 
+!python testorig.py 실행 
 
 
 
