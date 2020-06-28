@@ -48,7 +48,31 @@
 
 
 ## 실행 방법
-~~
+
+git clone https://github.com/CSID-DGU/2020-1-OSSP1-ninetynine-2.git 한 뒤,
+https://drive.google.com/drive/folders/1KttEJ4qEbpYxHg4A4aBHfXQPRZTALBhK?usp=sharing
+다운로드 받아서 폴더 위에 덮어쓰기
+
+FaceSwap-master/pytorch_stylegan_encoder/unknown/unknown.jpg
+FaceSwap-master/pytorch_stylegan_encoder/unknown/unknown_0x.png
+
+FaceSwap-master/pytorch_stylegan_encoder/raw_images/unknown.jpg
+
+파일 존재 해야함
+
+
+
+cd FaceSwap-master
+python ./pytorch_stylegan_encoder/encode_image.py . .
+
+npysave에 생성된 파일 확인 후 본인이라 인식하기 원하는 얼굴 
+FaceSwap-master/pytorch_stylegan_encoder/unknown/ 에 있어야 함
+
+python final_0_1.py
+
+result에서 결과 확인
+
+
 
 
 
