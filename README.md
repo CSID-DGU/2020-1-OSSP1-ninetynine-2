@@ -60,7 +60,10 @@ Colab에서 실행시
 dlib>=19.9.0 
 numpy>=1.13.1 
 scipy>=0.18.0 </code></pre>
-실행후 
+설치후
+
+unknown 파일에 단체 원본 사진
+known 파일에 인식대상 즉 얼굴을 안바꿔도 될 사람의 단독 사진
 !python testorig.py 실행 
 
 
