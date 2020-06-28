@@ -1,0 +1,5 @@
+[2020-06-14 23:21:49,953][INFO] Initializing generator.
+[2020-06-14 23:21:50,128][INFO] Loading pytorch model from `InterFaceGAN\models/pretrain/stylegan_ffhq.pth`.
+[2020-06-14 23:21:50,251][INFO] Successfully loaded!
+[2020-06-14 23:21:50,251][INFO]   `lod` of the loaded model is 0.0.
+[2020-06-14 23:21:50,298][INFO] Preparing boundary.

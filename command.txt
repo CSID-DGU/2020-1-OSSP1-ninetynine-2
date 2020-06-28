@@ -1,0 +1,3 @@
+python main.py --src imgs/ref.jpg --dst imgs/pic.jpg --out results/outputnew.jpg --correct_color
+
+python main.py --src imgs/change.png --dst imgs/PIC6.jpg --out results/outputnew2.jpg --correct_color
