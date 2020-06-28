@@ -1,7 +1,7 @@
 # 2020 OSSP 1학기
 
-# pr 파일안에 있는 것은 다운로드를 위한 압축 파일
-# FaceSwap-master는 압축이 안된 
+pr 파일안에 있는 것은 다운로드를 위한 압축 파일
+FaceSwap-master는 압축이 안된 
 
 # Project PROTOS   
 **(PROTect Our facial Secure)**
