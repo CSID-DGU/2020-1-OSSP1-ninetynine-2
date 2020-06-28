@@ -176,7 +176,9 @@ for i in range(len(face_locations)):
         name_list.append(name)
 
 ####
-    args_src = "./data/" + name_list[count_name]
+#    args_src = "./data/" + name_list[count_name]
+    args_src = after_face_list_full_dir[i]
+
     args_dst = "./unknown/unknown.jpg"
     args_out = "./output/result"
 
