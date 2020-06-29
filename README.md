@@ -63,6 +63,7 @@ FaceSwap-master/pytorch_stylegan_encoder/raw_images/unknown.jpg
 
 
 cd FaceSwap-master
+
 python ./pytorch_stylegan_encoder/encode_image.py . .
 
 npysave에 생성된 파일 확인 후 본인이라 인식하기 원하는 얼굴 
